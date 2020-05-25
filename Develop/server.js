@@ -29,13 +29,23 @@ app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 })
 
+//this takes in the data saved and pushes the new object to db.json
 app.post("/api/notes", function(req, res) {
     var newNote = req.body;
     newNote.id = i + 1
     notes.push(newNote);
     res.json(newNote);
     i++;
-    // app.get("/api/notes/")
+})
+
+app.post("/api/notes/:id", function(req, res) {
+    let editNote = req.body;
+    let id = parseInt(req.params.id);
+    var indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
+    var editable = notes[indexNumber];
+    editable.title = editNote.title
+    editable.text = editNote.text
+    res.json(editable);
 })
 
 //this takes the id string, makes it a number. And then goes through the notes array and finds the index number of the object with that id. We use that index number to splice that id out of the array

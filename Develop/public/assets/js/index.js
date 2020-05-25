@@ -3,9 +3,12 @@ const $noteText = $(".note-textarea");
 const $saveNoteBtn = $(".save-note");
 const $newNoteBtn = $(".new-note");
 const $noteList = $(".list-container .list-group");
+const $editNoteBtn = $(".edit-note");
 
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
+$editNoteBtn.hide();
+var ifEdit = false;
 
 // A function for getting all notes from the db
 const getNotes = () => {
@@ -24,6 +27,14 @@ const saveNote = (note) => {
   });
 };
 
+const editNote = (note, id) => {
+  return $.ajax({
+    url: "/api/notes/" + id,
+    data: note,
+    method: "POST",
+  });
+};
+
 // A function for deleting a note from the db
 const deleteNote = (id) => {
   return $.ajax({
@@ -35,6 +46,7 @@ const deleteNote = (id) => {
 // If there is an activeNote, display it, otherwise render empty inputs
 const renderActiveNote = () => {
   $saveNoteBtn.hide();
+  
 
   if (activeNote.id) {
     $noteTitle.attr("readonly", true);
@@ -51,15 +63,26 @@ const renderActiveNote = () => {
 
 // Get the note data from the inputs, save it to the db and update the view
 const handleNoteSave = function () {
-  const newNote = {
-    title: $noteTitle.val(),
-    text: $noteText.val(),
-  };
-
-  saveNote(newNote).then(() => {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+  if (ifEdit === false) {
+      const newNote = {
+      title: $noteTitle.val(),
+      text: $noteText.val(),
+    }
+    saveNote(newNote).then(() => {
+      getAndRenderNotes();
+      renderActiveNote();
+    });
+  
+  }
+  else if (ifEdit === true) {
+    activeNote.title = $noteTitle.val();
+    activeNote.text = $noteText.val();
+    editNote(activeNote, activeNote.id).then(() => {
+      getAndRenderNotes();
+      renderActiveNote();
+    });
+    ifEdit = false;
+  }
 };
 
 // Delete the clicked note
@@ -83,12 +106,14 @@ const handleNoteDelete = function (event) {
 const handleNoteView = function () {
   activeNote = $(this).data();
   renderActiveNote();
+  $editNoteBtn.show();
 };
 
 // Sets the activeNote to and empty object and allows the user to enter a new note
 const handleNewNoteView = function () {
   activeNote = {};
   renderActiveNote();
+  $editNoteBtn.hide();
 };
 
 // If a note's title or text are empty, hide the save button
@@ -140,6 +165,13 @@ const getAndRenderNotes = () => {
   return getNotes().then(renderNoteList);
 };
 
+const handleNoteEdit = () => {
+  $noteTitle.attr("readonly", false);
+  $noteText.attr("readonly", false);
+  ifEdit = true;
+};
+
+$editNoteBtn.on("click", handleNoteEdit);
 $saveNoteBtn.on("click", handleNoteSave);
 $noteList.on("click", ".list-group-item", handleNoteView);
 $newNoteBtn.on("click", handleNewNoteView);
