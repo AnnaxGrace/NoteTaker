@@ -6,6 +6,7 @@ var fs = require("fs");
 var app = express();
 var PORT = 8080;
 
+let i = 0
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -30,9 +31,18 @@ app.get("*", function(req, res) {
 
 app.post("/api/notes", function(req, res) {
     var newNote = req.body;
+    newNote.id = i + 1
     notes.push(newNote);
     res.json(newNote);
+    i++;
+    // app.get("/api/notes/")
+})
 
+app.delete("/api/notes/:id", function(req,res) {
+   let id = parseInt(req.params.id);
+   var indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
+    res.send('DELETE request to homepage')
+    notes.splice(indexNumber, 1)
 })
 
 
