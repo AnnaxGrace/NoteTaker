@@ -38,6 +38,7 @@ app.post("/api/notes", function(req, res) {
     // app.get("/api/notes/")
 })
 
+//this takes the id string, makes it a number. And then goes through the notes array and finds the index number of the object with that id. We use that index number to splice that id out of the array
 app.delete("/api/notes/:id", function(req,res) {
    let id = parseInt(req.params.id);
    var indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
@@ -51,3 +52,4 @@ app.listen(PORT, function() {
     //localhost:8080/
 })
 
+//commenting for commit
