@@ -1,10 +1,9 @@
 var express = require("express");
 var path = require("path");
 var fs = require("fs");
-// var notes = require("db.json");
 
 var app = express();
-var PORT = 8080;
+var PORT = process.env.PORT || 3000;
 
 let i = 0
 
@@ -15,21 +14,22 @@ app.use(express.static(path.join(__dirname, "public")));
 let notesRaw = fs.readFileSync(path.join(__dirname, "db/db.json"));
 let notes = JSON.parse(notesRaw);
 
-console.log(notes);
-
+//sets route /notes to notes.html
 app.get("/notes", function(req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"));
 })
 
+//sets route /api/notes to the parsed object data
 app.get("/api/notes", function(req, res){
     return res.json(notes);
 })
 
+//sets all other routes to index.html
 app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 })
 
-//this takes in the data saved and pushes the new object to db.json
+//this takes in a new note data saved and pushes the new object to db.json
 app.post("/api/notes", function(req, res) {
     var newNote = req.body;
     newNote.id = i + 1
@@ -38,17 +38,18 @@ app.post("/api/notes", function(req, res) {
     i++;
 })
 
+//this takes in edited note data, and changes title and text based on id
 app.post("/api/notes/:id", function(req, res) {
     let editNote = req.body;
     let id = parseInt(req.params.id);
-    var indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
-    var editable = notes[indexNumber];
+    let indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
+    let editable = notes[indexNumber];
     editable.title = editNote.title
     editable.text = editNote.text
     res.json(editable);
 })
 
-//this takes the id string, makes it a number. And then goes through the notes array and finds the index number of the object with that id. We use that index number to splice that id out of the array
+//This takes in the delete data info, and using the id, splices that object from the array
 app.delete("/api/notes/:id", function(req,res) {
    let id = parseInt(req.params.id);
    var indexNumber = notes.map(function(x) {return x.id}).indexOf(id);
@@ -57,9 +58,9 @@ app.delete("/api/notes/:id", function(req,res) {
 })
 
 
+
+
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
-    //localhost:8080/
 })
 
-//commenting for commit

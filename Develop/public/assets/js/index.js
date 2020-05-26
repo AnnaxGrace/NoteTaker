@@ -27,6 +27,7 @@ const saveNote = (note) => {
   });
 };
 
+//A function for editing a note to the db
 const editNote = (note, id) => {
   return $.ajax({
     url: "/api/notes/" + id,
@@ -61,7 +62,8 @@ const renderActiveNote = () => {
   }
 };
 
-// Get the note data from the inputs, save it to the db and update the view
+//If a new note, Get the note data from the inputs, save it to the db and update the view
+//If an edited note, get the note data from the inputs, edit it in the db, and update the view
 const handleNoteSave = function () {
   if (ifEdit === false) {
       const newNote = {
@@ -165,6 +167,7 @@ const getAndRenderNotes = () => {
   return getNotes().then(renderNoteList);
 };
 
+//Makes note editable and sets a new value with ifEdit for handleNoteSave
 const handleNoteEdit = () => {
   $noteTitle.attr("readonly", false);
   $noteText.attr("readonly", false);
