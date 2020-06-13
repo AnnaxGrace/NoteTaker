@@ -70,11 +70,26 @@ html, body {
 }
 
 .nav-style {
-  background-color: blue !important;
-  background-image: url("../images/navlines.png");
+  background-color: teal !important;
+  color: pink;
   height: 15%;
 }
 
 .jumbotron {
   background-color: teal;
+  height: 500%;
+  width: 100%;
+  border: pink 20px dashed;
+}
+
+.btnColor {
+  color: pink;
+}
+
+.title {
+  color: pink;
+}
+
+.container {
+  color: teal;
 }
