@@ -68,3 +68,13 @@ html, body {
   padding: 20px;
   cursor: pointer;
 }
+
+.nav-style {
+  background-color: blue !important;
+  background-image: url("../images/navlines.png");
+  height: 15%;
+}
+
+.jumbotron {
+  background-color: teal;
+}
